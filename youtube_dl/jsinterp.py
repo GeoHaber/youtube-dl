@@ -201,7 +201,7 @@ class JSInterpreter(object):
         def __init__(self, msg, *args, **kwargs):
             expr = kwargs.pop('expr', None)
             if expr is not None:
-                msg = '{0} in: {1!r}'.format(msg.rstrip(), expr[:100])
+                msg = '{0} in: {1!r:.100}'.format(msg.rstrip(), expr)
             super(JSInterpreter.Exception, self).__init__(msg, *args, **kwargs)
 
     class JS_RegExp(object):
@@ -262,7 +262,7 @@ class JSInterpreter(object):
         if not expr:
             return
         # collections.Counter() is ~10% slower in both 2.7 and 3.9
-        counters = {k: 0 for k in _MATCHING_PARENS.values()}
+        counters = dict((k, 0) for k in _MATCHING_PARENS.values())
         start, splits, pos, delim_len = 0, 0, 0, len(delim) - 1
         in_quote, escaping, skipping = None, False, 0
         after_op, in_regex_char_group, skip_re = True, False, 0
@@ -699,7 +699,7 @@ class JSInterpreter(object):
                 """ assert, but without risk of getting optimized out """
                 if not cndn:
                     memb = member
-                    raise self.Exception('{member} {msg}'.format(**locals()), expr=expr)
+                    raise self.Exception('{memb} {msg}'.format(**locals()), expr=expr)
 
             def eval_method():
                 if (variable, member) == ('console', 'debug'):
